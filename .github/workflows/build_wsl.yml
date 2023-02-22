@@ -21,7 +21,8 @@ jobs:
     
     - name: Bulid kernel
       run: |
-        git clone https://github.com/arunkanth9/linux.git 
+        git clone https://github.com/arunkanth9/linux.git --depth 1
+        cd linux
         cp Microsoft/config-wsl .config
         make -j$(nproc)
         
