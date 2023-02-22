@@ -1,0 +1,48 @@
+name: auto build engine
+
+on: 
+  release:
+    types: [Testing]
+  push:
+    branches: 
+      - master
+  watch:
+    types: [started]
+   
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - name: Install build depedencies
+      run: |
+        sudo apt update
+        sudo apt install -y flex bison libelf-dev dwarves bc build-essential libssl-dev 
+    
+    - name: Bulid kernel
+      run: |
+        git clone https://github.com/torvalds/linux.git --depth 1 linux
+        make -j$(nproc) KCONFIG_CONFIG=Microsoft/config-wsl LOCALVERSION=""
+        
+
+    - name: Upload kernel
+      uses: actions/upload-artifact@master
+      with:
+        name: bzImage
+        path: linux/arch/x86/boot/bzImage
+
+  push:
+    needs: build
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    
+    - name: Download kernel
+      uses: actions/download-artifact@master
+      with:
+        name: bzImage
+        path: ./
+    
+   
