@@ -21,8 +21,9 @@ jobs:
     
     - name: Bulid kernel
       run: |
-        git clone https://github.com/arunkanth9/linux.git
-        make -j$(nproc) KCONFIG_CONFIG=Microsoft/config-wsl LOCALVERSION=""
+        git clone https://github.com/arunkanth9/linux.git 
+        cp Microsoft/config-wsl .config
+        make -j$(nproc)
         
 
     - name: Upload kernel
